@@ -26,32 +26,36 @@ float altitude;
 void setup() {
     // join I2C bus (I2Cdev library doesn't do this automatically)
     Wire.begin();
-
+    
     // initialize serial communication
     // (38400 chosen because it works as well at 8MHz as it does at 16MHz, but
     // it's really up to you depending on your project)
     Serial.begin(38400);
-
+    
     // initialize device
     Serial.println("Initializing I2C devices...");
+
     accel.initialize();
-    barometer.initialize();
-    gyro.initialize();
-    mag.initialize();
-
-    // verify connection
-    Serial.println("Testing device connections...");
-    Serial.println(accel.testConnection() ? "ADXL345 connection successful" : "ADXL345 connection failed");
-    Serial.println(barometer.testConnection() ? "BMP085 connection successful" : "BMP085 connection failed");
-    Serial.println(gyro.testConnection() ? "L3G4200D connection successful" : "L3G4200D connection failed");
-    Serial.println(mag.testConnection() ? "HMC5883L connection successful" : "HMC5883L connection failed");
-
+    boolean accOK = accel.testConnection();
+    Serial.println(accOK ? "ADXL345 connection successful" : "ADXL345 connection failed");
     accel.setRange(ADXL345_RANGE_2G); // 256 = 1g
+    
+    barometer.initialize();
+    boolean barOK = barometer.testConnection();
+    Serial.println(barOK ? "BMP085 connection successful" : "BMP085 connection failed");
+
+    gyro.initialize();
+    boolean gyroOK = gyro.testConnection();
+    Serial.println(gyroOK ? "L3G4200D connection successful" : "L3G4200D connection failed");
     gyro.setFullScale(2000);
+    
+    mag.initialize();
+    boolean magOK = mag.testConnection();
+    Serial.println(magOK ? "HMC5883L connection successful" : "HMC5883L connection failed");
 
     // configure Arduino LED for
     pinMode(LED_PIN, OUTPUT);
-    digitalWrite(LED_PIN, true);
+    digitalWrite(LED_PIN, accOK && barOK && gyroOK && magOK);
 }
 
 void loop() {
