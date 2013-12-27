@@ -7,7 +7,7 @@
 #include "L3G4200D.h"
 
 //The standard atmosphere: 101325 Pa[1] or 1013.25 millibars or hectopascals. 29.92 inHg
-#define SEA_LVL_PRESSURE 1013.25
+#define SEA_LVL_PRESSURE 101325
 #define LED_PIN 13
 
 ADXL345 accel;
